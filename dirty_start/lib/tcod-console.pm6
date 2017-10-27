@@ -13,6 +13,33 @@ class Color is repr('CPointer') { * }
 class TCOD_bkgnd_flag_t is repr('CPointer') { * }
 class TCOD_alignment_t is repr('CPointer') { * }
 
+class ConsoleHandle is repr('CPointer') {
+
+    sub TCOD_console_new(int32 $width, int32 $height) returns ConsoleHandle   is native('libtcod') { * }
+    sub TCOD_console_set_default_background(ConsoleHandle $con, uint32 $col)   is native('libtcod') { * }
+    sub TCOD_console_set_default_foreground(ConsoleHandle $con, uint32 $col)   is native('libtcod') { * }
+    sub TCOD_console_put_char(ConsoleHandle $con, int32 $x, int32 $y, int32 $c, TCOD_bkgnd_flag_t $flag)   is native('libtcod') { * }
+
+
+    method new(int32 $width, int32 $height) {
+        TCOD_console_new($width, $height);
+    }
+
+    method set_default_background(uint32 $color) {
+        TCOD_console_set_default_background(self, $color);
+    }
+    method set_default_foreground(uint32 $color) {
+        TCOD_console_set_default_foreground(self, $color);
+    }
+
+    method put_char(ConsoleHandle $con, int32 $x, int32 $y, int32 $c, TCOD_bkgnd_flag_t $flag) {
+        TCOD_console_put_char(self, $x, $y, $c, $flag);
+    }
+
+
+    # ... and so on.
+}
+
 
 # void init_root(int w, int h, const char * title, bool fullscreen, TCOD_renderer_t renderer);
 our sub init_root(int32 $w, int32 $h, Str $title, bool $fullscreen, uint32 $renderer) is export
@@ -71,7 +98,7 @@ our sub set_default_background(Console_Pointer $con, Color $col) is export
     is symbol('TCOD_console_set_default_background') is native('libtcod') { * }
 
 # void set_default_foreground(Console_Pointer con,Color col);
-our sub set_default_foreground(Console_Pointer $con, Color $col) is export
+our sub set_default_foreground(Console_Pointer $con, uint32 $col) is export
     is symbol('TCOD_console_set_default_foreground') is native('libtcod') { * }
 
 # void clear(Console_Pointer con);
