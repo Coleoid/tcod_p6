@@ -1,16 +1,17 @@
 use NativeCall;
 unit module tcod-console;
 
-our sub set_custom_font(Str, int32, int32, int32) is export
-    is symbol('TCOD_console_set_custom_font') is native('libtcod') { * }
+# our sub set_custom_font(Str, int32, int32, int32) is export
+#     is symbol('TCOD_console_set_custom_font') is native('libtcod') { * }
+#
+# our sub new(int32, int32) is export
+#     returns Pointer
+#     is symbol('TCOD_console_new') is native('libtcod') { * }
 
-our sub new(int32, int32) is export
-    returns Pointer
-    is symbol('TCOD_console_new') is native('libtcod') { * }
-
-our sub is_window_closed() is export
-    returns bool
-    is symbol('TCOD_console_is_window_closed') is native('libtcod') { * }
+class Console_Pointer is repr('CPointer') { * }
+class Color is repr('CPointer') { * }
+class TCOD_bkgnd_flag_t is repr('CPointer') { * }
+class TCOD_alignment_t is repr('CPointer') { * }
 
 
 # void init_root(int w, int h, const char * title, bool fullscreen, TCOD_renderer_t renderer);
@@ -54,7 +55,7 @@ our sub map_ascii_code_to_font(int32 $asciiCode, int32 $fontCharX, int32 $fontCh
     is symbol('TCOD_console_map_ascii_code_to_font') is native('libtcod') { * }
 
 # void map_ascii_codes_to_font(int asciiCode, int nbCodes, int fontCharX, int fontCharY);
-our sub map_ascii_codes_to_font(int asciiCode, int nbCodes, int fontCharX, int fontCharY) is export
+our sub map_ascii_codes_to_font(int32 $asciiCode, int32 $nbCodes, int32 $fontCharX, int32 $fontCharY) is export
     is symbol('TCOD_console_map_ascii_codes_to_font') is native('libtcod') { * }
 
 # void map_string_to_font(const char *s, int fontCharX, int fontCharY);
@@ -82,19 +83,19 @@ our sub set_char_background(Console_Pointer $con, int32 $x, int32 $y, Color $col
     is symbol('TCOD_console_set_char_background') is native('libtcod') { * }
 
 # void set_char_foreground(Console_Pointer con,int x, int y, Color col);
-our sub set_char_foreground(Console_Pointer $con,int $x, int $y, Color $col) is export
+our sub set_char_foreground(Console_Pointer $con, int32 $x, int32 $y, Color $col) is export
     is symbol('TCOD_console_set_char_foreground') is native('libtcod') { * }
 
 # void set_char(Console_Pointer con,int x, int y, int c);
-our sub set_char(Console_Pointer $con, int $x, int $y, int $c) is export
+our sub set_char(Console_Pointer $con, int32 $x, int32 $y, int32 $c) is export
     is symbol('TCOD_console_set_char') is native('libtcod') { * }
 
 # void put_char(Console_Pointer con,int x, int y, int c, TCOD_bkgnd_flag_t flag);
-our sub put_char(Console_Pointer $con, int $x, int $y, int $c, TCOD_bkgnd_flag_t $flag) is export
+our sub put_char(Console_Pointer $con, int32 $x, int32 $y, int32 $c, TCOD_bkgnd_flag_t $flag) is export
     is symbol('TCOD_console_put_char') is native('libtcod') { * }
 
 # void put_char_ex(Console_Pointer con,int x, int y, int c, Color fore, Color back);
-our sub put_char_ex(Console_Pointer $con, int $x, int $y, int $c, Color $fore, Color $back) is export
+our sub put_char_ex(Console_Pointer $con, int32 $x, int32 $y, int32 $c, Color $fore, Color $back) is export
     is symbol('TCOD_console_put_char_ex') is native('libtcod') { * }
 
 # void set_background_flag(Console_Pointer con,TCOD_bkgnd_flag_t flag);
@@ -162,9 +163,9 @@ our sub map_string_to_font_utf(Str $s, int32 $fontCharX, int32 $fontCharY) is ex
 # our sub print_utf(Console_Pointer con,int x, int y, const wchar_t *fmt, ...) is export
 #     is symbol('TCOD_console_print_utf') is native('libtcod') { * }
 
-# void print_ex_utf(Console_Pointer con,int x, int y, TCOD_bkgnd_flag_t flag, TCOD_alignment_t alignment, const wchar_t *fmt, ...);
-our sub print_ex_utf(Console_Pointer con,int x, int y, TCOD_bkgnd_flag_t flag, TCOD_alignment_t alignment, const wchar_t *fmt, ...) is export
-    is symbol('TCOD_console_print_ex_utf') is native('libtcod') { * }
+# # void print_ex_utf(Console_Pointer con,int x, int y, TCOD_bkgnd_flag_t flag, TCOD_alignment_t alignment, const wchar_t *fmt, ...);
+# our sub print_ex_utf(Console_Pointer $con, int32 $x, int32 $y, TCOD_bkgnd_flag_t $flag, TCOD_alignment_t $alignment, Str $fmt, ...) is export
+#     is symbol('TCOD_console_print_ex_utf') is native('libtcod') { * }
 
 
 
