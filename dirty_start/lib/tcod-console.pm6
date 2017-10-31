@@ -1,4 +1,6 @@
 use NativeCall;
+use tcod-color;
+
 unit module tcod-console;
 
 # our sub set_custom_font(Str, int32, int32, int32) is export
@@ -9,31 +11,31 @@ unit module tcod-console;
 #     is symbol('TCOD_console_new') is native('libtcod') { * }
 
 class Console_Pointer is repr('CPointer') { * }
-class Color is repr('CPointer') { * }
+#class Color is repr('CPointer') { * }
 class TCOD_bkgnd_flag_t is repr('CPointer') { * }
 class TCOD_alignment_t is repr('CPointer') { * }
 
 class ConsoleHandle is repr('CPointer') {
 
     sub TCOD_console_new(int32 $width, int32 $height) returns ConsoleHandle   is native('libtcod') { * }
-    sub TCOD_console_set_default_background(ConsoleHandle $con, uint32 $col)   is native('libtcod') { * }
-    sub TCOD_console_set_default_foreground(ConsoleHandle $con, uint32 $col)   is native('libtcod') { * }
-    sub TCOD_console_put_char(ConsoleHandle $con, int32 $x, int32 $y, int32 $c, TCOD_bkgnd_flag_t $flag)   is native('libtcod') { * }
+    sub TCOD_console_set_default_background(ConsoleHandle $con, tcod-color::Color $col)   is native('libtcod') { * }
+    sub TCOD_console_set_default_foreground(ConsoleHandle $con, tcod-color::Color $col)   is native('libtcod') { * }
+    sub TCOD_console_put_char(ConsoleHandle $con, int32 $x, int32 $y, int32 $c, uint32 $flag)   is native('libtcod') { * }
 
 
     method new(int32 $width, int32 $height) {
         TCOD_console_new($width, $height);
     }
 
-    method set_default_background(uint32 $color) {
+    method set_default_background(tcod-color::Color $color) {
         TCOD_console_set_default_background(self, $color);
     }
-    method set_default_foreground(uint32 $color) {
+    method set_default_foreground(tcod-color::Color $color) {
         TCOD_console_set_default_foreground(self, $color);
     }
 
-    method put_char(ConsoleHandle $con, int32 $x, int32 $y, int32 $c, TCOD_bkgnd_flag_t $flag) {
-        TCOD_console_put_char(self, $x, $y, $c, $flag);
+    method put_char(int32 $x, int32 $y, Str $c, uint32 $flag) {
+        TCOD_console_put_char(self, $x, $y, ord($c), $flag);
     }
 
 
@@ -94,11 +96,11 @@ our sub set_dirty(int32 $x, int32 $y, int32 $w, int32 $h) is export
     is symbol('TCOD_console_set_dirty') is native('libtcod') { * }
 
 # void set_default_background(Console_Pointer con,Color col);
-our sub set_default_background(Console_Pointer $con, Color $col) is export
+our sub set_default_background(Console_Pointer $con, tcod-color::Color $col) is export
     is symbol('TCOD_console_set_default_background') is native('libtcod') { * }
 
 # void set_default_foreground(Console_Pointer con,Color col);
-our sub set_default_foreground(Console_Pointer $con, uint32 $col) is export
+our sub set_default_foreground(Console_Pointer $con, tcod-color::Color $col) is export
     is symbol('TCOD_console_set_default_foreground') is native('libtcod') { * }
 
 # void clear(Console_Pointer con);
@@ -106,11 +108,11 @@ our sub clear(Console_Pointer $con) is export
     is symbol('TCOD_console_clear') is native('libtcod') { * }
 
 # void set_char_background(Console_Pointer con,int x, int y, Color col, TCOD_bkgnd_flag_t flag);
-our sub set_char_background(Console_Pointer $con, int32 $x, int32 $y, Color $col, TCOD_bkgnd_flag_t $flag) is export
+our sub set_char_background(Console_Pointer $con, int32 $x, int32 $y, tcod-color::Color $col, TCOD_bkgnd_flag_t $flag) is export
     is symbol('TCOD_console_set_char_background') is native('libtcod') { * }
 
 # void set_char_foreground(Console_Pointer con,int x, int y, Color col);
-our sub set_char_foreground(Console_Pointer $con, int32 $x, int32 $y, Color $col) is export
+our sub set_char_foreground(Console_Pointer $con, int32 $x, int32 $y, tcod-color::Color $col) is export
     is symbol('TCOD_console_set_char_foreground') is native('libtcod') { * }
 
 # void set_char(Console_Pointer con,int x, int y, int c);
@@ -122,7 +124,7 @@ our sub put_char(Console_Pointer $con, int32 $x, int32 $y, int32 $c, TCOD_bkgnd_
     is symbol('TCOD_console_put_char') is native('libtcod') { * }
 
 # void put_char_ex(Console_Pointer con,int x, int y, int c, Color fore, Color back);
-our sub put_char_ex(Console_Pointer $con, int32 $x, int32 $y, int32 $c, Color $fore, Color $back) is export
+our sub put_char_ex(Console_Pointer $con, int32 $x, int32 $y, int32 $c, tcod-color::Color $fore, tcod-color::Color $back) is export
     is symbol('TCOD_console_put_char_ex') is native('libtcod') { * }
 
 # void set_background_flag(Console_Pointer con,TCOD_bkgnd_flag_t flag);
@@ -197,6 +199,8 @@ our sub map_string_to_font_utf(Str $s, int32 $fontCharX, int32 $fontCharY) is ex
 
 
 #    is symbol('TCOD_console_') is native('libtcod') { * }
+
+our sub flush() is symbol('TCOD_console_flush') is native('libtcod') is export { * }
 
 
 my $doc = q:to/EOD/;
